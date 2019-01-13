@@ -1,0 +1,59 @@
+version: '3.5'  
+
+services: 
+    nginx: 
+      image: nginx:latest
+      container_name: nginx
+      links:
+        - frontend
+        - backend
+      volumes:
+        - ./nginx.conf:/etc/nginx/nginx.conf
+      ports:
+        - 80:80
+
+    frontend: 
+      image: frontend 
+      ports: 
+        - 5000:5000
+      expose:
+        - 5000
+      command: npm start
+
+    backend:
+      image: backend
+      depends_on:
+        - postgres
+      links:
+        - redis
+        - postgres
+      ports:
+        - 8000:8000
+      expose:
+        - 8000
+      environment:
+        - REDIS=redis
+        - DB_USERNAME=user
+        - DB_NAME=postgres
+        - DB_PASSWORD=password
+        - DB_HOST=postgres
+      command: npm start
+
+
+    redis: 
+      image: redis:latest
+      ports:
+        - 6379:6379
+
+    postgres:
+      image: postgres
+      restart: always
+      expose: 
+        - 5432
+      ports:
+        - 5432:5432
+      environment:
+        - POSTGRES_USER=user
+        - POSTGRES_PASSWORD=password
+        - POSTGRES_DB=postgres
+
