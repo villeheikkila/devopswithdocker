@@ -1,0 +1,3 @@
+docker run -it --rm  ubuntu sh -c 'read website; apt-get update && apt-get install -y curl; sleep 3; curl http://$website;'
+
+...then just type helsinki.fi and [Enter]
